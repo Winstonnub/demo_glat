@@ -1,2 +1,37 @@
-<!-- Frontend - Toronto Weather App -->
-<!-- TODO: implement UI -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toronto Weather</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Toronto Weather</h1>
+
+        <div id="current-weather" class="card">
+            <h2>Current Weather</h2>
+            <div id="loading">Loading...</div>
+            <div id="weather-data" class="hidden">
+                <p class="temperature" id="temp"></p>
+                <p class="condition" id="condition"></p>
+                <div class="details">
+                    <span>Humidity: <strong id="humidity"></strong></span>
+                    <span>Wind: <strong id="wind"></strong></span>
+                </div>
+            </div>
+            <div id="error" class="hidden error"></div>
+        </div>
+
+        <div id="forecast" class="card">
+            <h2>5-Day Forecast</h2>
+            <div id="forecast-loading">Loading...</div>
+            <div id="forecast-list" class="forecast-grid hidden"></div>
+            <div id="forecast-error" class="hidden error"></div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
