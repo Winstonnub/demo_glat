@@ -1,7 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
   fetchWeather();
+  fetchHourlyForecast();
   fetchForecast();
 });
+
+// Mock helper – returns the same shape as /api/hourly-forecast.
+// Replace this function body with a real fetch once the endpoint is merged.
+function getMockHourlyForecast() {
+  const now = new Date();
+  const hourly = [];
+  for (let i = 1; i <= 6; i++) {
+    const future = new Date(now.getTime() + i * 60 * 60 * 1000);
+    const iso = future.toISOString().slice(0, 16); // "YYYY-MM-DDTHH:MM"
+    hourly.push({ time: iso, temperature: +(Math.random() * 10 + 5).toFixed(1) });
+  }
+  return { city: "Toronto", hourly };
+}
 
 async function fetchWeather() {
   try {
@@ -20,6 +34,36 @@ async function fetchWeather() {
     document.getElementById("loading").classList.add("hidden");
     document.getElementById("error").textContent = "Could not load weather data.";
     document.getElementById("error").classList.remove("hidden");
+  }
+}
+
+async function fetchHourlyForecast() {
+  try {
+    // TODO: swap mock for real endpoint once merged:
+    // const res = await fetch("/api/hourly-forecast");
+    // if (!res.ok) throw new Error("Failed to fetch hourly forecast");
+    // const data = await res.json();
+    const data = getMockHourlyForecast();
+
+    const container = document.getElementById("hourly-list");
+    data.hourly.forEach((entry) => {
+      const div = document.createElement("div");
+      div.className = "hourly-row";
+      const d = new Date(entry.time);
+      const label = d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+      div.innerHTML = `
+        <span class="hourly-time">${label}</span>
+        <span class="hourly-temp">${Math.round(entry.temperature)}°C</span>
+      `;
+      container.appendChild(div);
+    });
+
+    document.getElementById("hourly-loading").classList.add("hidden");
+    container.classList.remove("hidden");
+  } catch (err) {
+    document.getElementById("hourly-loading").classList.add("hidden");
+    document.getElementById("hourly-error").textContent = "Could not load hourly forecast.";
+    document.getElementById("hourly-error").classList.remove("hidden");
   }
 }
 
