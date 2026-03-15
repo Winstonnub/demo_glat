@@ -64,5 +64,34 @@ def forecast():
     return jsonify({"city": CITY, "forecast": list(daily.values())})
 
 
+@app.route("/api/hourly-forecast")
+def hourly_forecast():
+    url = "https://api.open-meteo.com/v1/forecast"
+    params = {
+        "latitude": 43.65107,
+        "longitude": -79.347015,
+        "hourly": "temperature_2m",
+        "timezone": "America/Toronto",
+    }
+    response = requests.get(url, params=params, timeout=10)
+
+    if response.status_code != 200:
+        return jsonify({"error": "Failed to fetch hourly forecast data"}), 502
+
+    data = response.json()
+
+    try:
+        times = data["hourly"]["time"]
+        temps = data["hourly"]["temperature_2m"]
+    except (KeyError, TypeError):
+        return jsonify({"error": "Invalid data format from weather provider"}), 502
+
+    forecast_entries = []
+    for time, temp in list(zip(times, temps))[:6]:
+        forecast_entries.append({"time": time, "temperature": temp})
+
+    return jsonify({"city": CITY, "hourly": forecast_entries})
+
+
 if __name__ == "__main__":
     app.run(debug=True)
