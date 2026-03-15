@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   fetchWeather();
+  fetchHourlyForecast();
   fetchForecast();
 });
 
@@ -20,6 +21,48 @@ async function fetchWeather() {
     document.getElementById("loading").classList.add("hidden");
     document.getElementById("error").textContent = "Could not load weather data.";
     document.getElementById("error").classList.remove("hidden");
+  }
+}
+
+// TODO: Replace getMockHourlyData() with fetch("/api/hourly-forecast") once the endpoint is merged.
+function getMockHourlyData() {
+  const now = new Date();
+  const hourly = [];
+  for (let i = 0; i < 6; i++) {
+    const h = new Date(now.getTime() + i * 3600000);
+    const time = h.toISOString().slice(0, 16);
+    hourly.push({ time, temperature: Math.round((3 + Math.random() * 5) * 10) / 10 });
+  }
+  return { city: "Toronto", hourly };
+}
+
+async function fetchHourlyForecast() {
+  try {
+    // Swap this mock call for the real endpoint when available:
+    // const res = await fetch("/api/hourly-forecast");
+    // if (!res.ok) throw new Error("Failed to fetch hourly forecast");
+    // const data = await res.json();
+    const data = getMockHourlyData();
+
+    const container = document.getElementById("hourly-list");
+    data.hourly.forEach((entry) => {
+      const row = document.createElement("div");
+      row.className = "hourly-row";
+      const t = new Date(entry.time);
+      const label = t.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+      row.innerHTML = `
+        <span class="hourly-time">${label}</span>
+        <span class="hourly-temp">${Math.round(entry.temperature)}°C</span>
+      `;
+      container.appendChild(row);
+    });
+
+    document.getElementById("hourly-loading").classList.add("hidden");
+    container.classList.remove("hidden");
+  } catch (err) {
+    document.getElementById("hourly-loading").classList.add("hidden");
+    document.getElementById("hourly-error").textContent = "Could not load hourly forecast.";
+    document.getElementById("hourly-error").classList.remove("hidden");
   }
 }
 

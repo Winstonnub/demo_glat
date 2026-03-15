@@ -57,6 +57,31 @@ h1 {
     color: #aaa;
 }
 
+.hourly-table {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.hourly-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #0f3460;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+}
+
+.hourly-time {
+    color: #aaa;
+    font-size: 0.95rem;
+}
+
+.hourly-temp {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
 .forecast-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
